@@ -35,7 +35,7 @@ with app.app_context():
             restaurant_id=restaurant.id,
             email="admin@elato.in",
         )
-        admin.set_password("ElatoAdmin@2024")  # CHANGE THIS
+        admin.set_password("Elato@1234")  # CHANGE THIS
         db.session.add(admin)
 
         # ── Hero Slides ──────────────────────────────────────────

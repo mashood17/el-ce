@@ -15,6 +15,8 @@ def create_app():
             "origins": [
                 app.config["FRONTEND_URL"],
                 app.config["ADMIN_URL"],
+                "http://localhost:5173",
+                "http://localhost:5174",
             ],
             "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
