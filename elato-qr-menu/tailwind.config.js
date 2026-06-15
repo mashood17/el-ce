@@ -16,10 +16,6 @@ export default {
         display: ["Cormorant Garamond", "Georgia", "serif"],
         body: ["DM Sans", "system-ui", "sans-serif"],
       },
-      letterSpacing: {
-        luxury: "0.2em",
-        "luxury-wide": "0.35em",
-      },
     },
   },
   plugins: [],

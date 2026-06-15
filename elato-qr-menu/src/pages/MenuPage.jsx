@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import Logo from "../components/layout/Logo";
 import Footer from "../components/layout/Footer";
 import HeroSlider from "../components/hero/HeroSlider";
 import CategorySection from "../components/menu/CategorySection";
@@ -12,65 +11,64 @@ export default function MenuPage() {
   const { data: categories, isLoading, isError } = useCategories();
 
   return (
-    <div className="min-h-screen" style={{ background: "#EBD8B7" }}>
-      {/* Hero */}
+    <div className="min-h-screen elato-pattern">
       <HeroSlider />
 
-      {/* Logo */}
-      <div className="px-6 py-8 text-center">
-        <Logo />
-      </div>
+      <div>
+        <div style={{ textAlign: "center", padding: "52px 24px 36px" }}>
+        <h2 style={{
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+            fontWeight: 500,
+            color: "#1A0E00",
+            letterSpacing: "0.06em",
+        }}>
+            Our Menu
+        </h2>
+        <div style={{
+            width: "32px", height: "1.5px",
+            background: "#9E7519", opacity: 0.65,
+            margin: "14px auto 0",
+        }} />
+        </div>
 
-      {/* Tagline */}
-      <div className="text-center px-8 mb-10">
-        <p
-          className="font-display italic text-brand-accent"
-          style={{ fontSize: "clamp(0.85rem, 2.5vw, 1rem)", fontWeight: 300, lineHeight: 1.8 }}
-        >
-          Where Every Scoop Is A Celebration Of Flavour And Finesse
-        </p>
-      </div>
-
-      {/* Section Divider */}
-      <div className="px-8 mb-10">
-        <div
-          style={{
-            height: "1px",
-            background: "linear-gradient(90deg, transparent, rgba(158,117,25,0.4), transparent)",
-          }}
-        />
-      </div>
-
-      {/* Menu */}
-      <main className="max-w-lg mx-auto px-6 pb-8">
-        {isLoading && (
-          <div className="text-center py-16">
-            <p
-              className="font-display text-brand-accent tracking-luxury uppercase"
-              style={{ fontSize: "0.7rem" }}
+        {/* Menu */}
+        <main style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 32px 60px" }}>
+          {isLoading && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-16"
             >
-              Loading Menu…
-            </p>
-          </div>
-        )}
+              <p
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: "1.1rem",
+                  fontStyle: "italic",
+                  color: "#6B4A18",
+                  fontWeight: 400,
+                }}
+              >
+                Preparing the menu…
+              </p>
+            </motion.div>
+          )}
 
-        {isError && (
-          <div className="text-center py-16">
-            <p className="font-body text-brand-accent" style={{ fontSize: "0.85rem" }}>
-              Unable to load menu. Please try again.
-            </p>
-          </div>
-        )}
+          {isError && (
+            <div className="text-center py-16">
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", color: "#6B4A18" }}>
+                Unable to load menu. Please try again.
+              </p>
+            </div>
+          )}
 
-        {categories?.map((category) => (
-          <CategorySection key={category.id} category={category} />
-        ))}
-      </main>
+          {categories?.map((category, index) => (
+            <CategorySection key={category.id} category={category} index={index} />
+          ))}
+        </main>
+      </div>
 
-      {/* Footer */}
       <Footer restaurant={restaurant} />
-
-      {/* Item Modal */}
       <ItemModal />
     </div>
   );

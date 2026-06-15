@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import useMenuStore from "../../store/useMenuStore";
 import VegIndicator from "../menu/VegIndicator";
 
@@ -10,23 +9,15 @@ const backdropVariants = {
 };
 
 const modalVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-  },
-  exit: {
-    opacity: 0,
-    y: 20,
-    transition: { duration: 0.25, ease: "easeIn" },
-  },
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } },
+  exit: { opacity: 0, y: 16, transition: { duration: 0.22, ease: "easeIn" } },
 };
 
 const CloseIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
@@ -35,11 +26,7 @@ export default function ItemModal() {
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = isModalOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [isModalOpen]);
 
@@ -49,81 +36,140 @@ export default function ItemModal() {
     <AnimatePresence>
       {isModalOpen && item && (
         <>
-          {/* Backdrop */}
           <motion.div
             key="backdrop"
             variants={backdropVariants}
             initial="hidden"
             animate="visible"
             exit="hidden"
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40"
-            style={{ background: "rgba(44,26,0,0.65)", backdropFilter: "blur(4px)" }}
+            transition={{ duration: 0.28 }}
             onClick={closeItem}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 40,
+              background: "rgba(26,14,0,0.6)",
+              backdropFilter: "blur(5px)",
+            }}
           />
 
-          {/* Modal */}
           <motion.div
             key="modal"
             variants={prefersReducedMotion ? {} : modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-x-0 bottom-0 z-50 md:inset-0 md:flex md:items-center md:justify-center"
+            style={{
+              position: "fixed",
+              insetInline: 0,
+              bottom: 0,
+              zIndex: 50,
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "center",
+            }}
+            className="md:items-center md:inset-0"
           >
             <div
-              className="relative w-full md:max-w-lg md:mx-auto"
               style={{
-                background: "#EBD8B7",
-                borderRadius: "20px 20px 0 0",
-                maxHeight: "92vh",
+                position: "relative",
+                width: "100%",
+                maxWidth: "480px",
+                background: "#F0DFB8",
+                borderRadius: "16px 16px 0 0",
+                maxHeight: "90vh",
                 overflowY: "auto",
+                boxShadow: "0 -8px 60px rgba(44,26,0,0.18)",
               }}
+              className="md:rounded-sm"
             >
-              {/* Close Button */}
+              {/* Close */}
               <button
                 onClick={closeItem}
-                className="absolute top-4 right-4 z-10 p-2 text-brand-accent hover:text-brand-gold transition-colors"
-                aria-label="Close"
+                style={{
+                  position: "absolute",
+                  top: "16px",
+                  right: "16px",
+                  zIndex: 10,
+                  padding: "6px",
+                  color: "#6B4A18",
+                  background: "rgba(235,216,183,0.7)",
+                  border: "none",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "color 0.2s ease",
+                }}
               >
                 <CloseIcon />
               </button>
 
               {/* Image */}
               {item.image_url ? (
-                <div className="w-full" style={{ aspectRatio: "4/3", overflow: "hidden" }}>
+                <div
+                  style={{
+                    width: "100%",
+                    aspectRatio: "4/3",
+                    overflow: "hidden",
+                    borderRadius: "16px 16px 0 0",
+                  }}
+                  className="md:rounded-t-sm"
+                >
                   <img
                     src={item.image_url}
                     alt={item.name}
-                    className="w-full h-full object-cover"
-                    style={{ borderRadius: "20px 20px 0 0" }}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
                 </div>
               ) : (
                 <div
-                  className="w-full flex items-center justify-center"
                   style={{
+                    width: "100%",
                     aspectRatio: "4/3",
-                    background: "#EEDDBF",
-                    borderRadius: "20px 20px 0 0",
+                    background: "#E5CFA0",
+                    borderRadius: "16px 16px 0 0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <span
-                    className="font-display text-brand-accent tracking-luxury uppercase"
-                    style={{ fontSize: "0.7rem" }}
+                  <p
+                    style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontSize: "0.75rem",
+                      letterSpacing: "0.25em",
+                      color: "#9E7519",
+                      textTransform: "uppercase",
+                      fontWeight: 400,
+                    }}
                   >
                     Elatō Celebré
-                  </span>
+                  </p>
                 </div>
               )}
 
               {/* Content */}
-              <div className="px-6 py-6">
-                <div className="flex items-start gap-3 mb-3">
-                  <VegIndicator isVeg={item.is_veg} size={16} />
+              <div style={{ padding: "24px 28px 32px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "10px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <VegIndicator isVeg={item.is_veg} />
                   <h2
-                    className="font-display text-brand-dark flex-1"
-                    style={{ fontSize: "1.5rem", fontWeight: 400, lineHeight: 1.2 }}
+                    style={{
+                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontSize: "1.55rem",
+                      fontWeight: 600,
+                      color: "#1A0E00",
+                      lineHeight: 1.15,
+                      letterSpacing: "0.02em",
+                    }}
                   >
                     {item.name}
                   </h2>
@@ -131,26 +177,49 @@ export default function ItemModal() {
 
                 {item.description && (
                   <p
-                    className="font-body text-brand-accent mb-6"
-                    style={{ fontSize: "0.85rem", lineHeight: 1.7, paddingLeft: "24px" }}
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: "0.82rem",
+                      fontWeight: 400,
+                      color: "#6B4A18",
+                      lineHeight: 1.7,
+                      marginBottom: "20px",
+                      paddingLeft: "20px",
+                    }}
                   >
                     {item.description}
                   </p>
                 )}
 
                 <div
-                  className="flex items-center justify-between pt-4"
-                  style={{ borderTop: "1px solid rgba(158,117,25,0.2)" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    paddingTop: "16px",
+                    borderTop: "1px solid rgba(90,55,10,0.14)",
+                  }}
                 >
                   <span
-                    className="font-body text-brand-accent tracking-luxury uppercase"
-                    style={{ fontSize: "0.6rem" }}
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: "0.6rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.28em",
+                      color: "#9E7519",
+                      textTransform: "uppercase",
+                    }}
                   >
                     Price
                   </span>
                   <span
-                    className="font-display text-brand-gold"
-                    style={{ fontSize: "1.6rem", fontWeight: 500 }}
+                    style={{
+                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontSize: "1.7rem",
+                      fontWeight: 600,
+                      color: "#6B3E00",
+                      letterSpacing: "0.02em",
+                    }}
                   >
                     ₹{item.price % 1 === 0 ? Math.floor(item.price) : item.price}
                   </span>

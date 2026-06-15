@@ -1,45 +1,63 @@
 import os
 import uuid
-from supabase import create_client
+import traceback
 from flask import current_app
 
 
 def get_supabase():
-    return create_client(
-        current_app.config["SUPABASE_URL"],
-        current_app.config["SUPABASE_SERVICE_KEY"]
-    )
+    from supabase import create_client
+    url = current_app.config.get("SUPABASE_URL")
+    key = current_app.config.get("SUPABASE_SERVICE_KEY")
+    print(f"Supabase URL: {url}")
+    print(f"Supabase Key present: {bool(key)}")
+    if not url or not key:
+        raise ValueError("SUPABASE_URL or SUPABASE_SERVICE_KEY is missing from config")
+    return create_client(url, key)
 
 
 def upload_image(file_bytes: bytes, filename: str, folder: str = "general") -> str:
-    """
-    Upload image to Supabase Storage.
-    Returns the public URL of the uploaded file.
-    """
-    supabase = get_supabase()
-    bucket = current_app.config["SUPABASE_BUCKET"]
-    
-    ext = filename.rsplit(".", 1)[-1].lower()
-    unique_name = f"{folder}/{uuid.uuid4()}.{ext}"
-    
-    supabase.storage.from_(bucket).upload(
-        path=unique_name,
-        file=file_bytes,
-        file_options={"content-type": f"image/{ext}"}
-    )
-    
-    public_url = supabase.storage.from_(bucket).get_public_url(unique_name)
-    return public_url
+    try:
+        supabase = get_supabase()
+        bucket = current_app.config.get("SUPABASE_BUCKET", "elato-media")
+        print(f"Bucket: {bucket}")
+
+        ext = filename.rsplit(".", 1)[-1].lower()
+        unique_name = f"{folder}/{uuid.uuid4()}.{ext}"
+        print(f"Uploading to path: {unique_name}")
+
+        content_type_map = {
+            "jpg": "image/jpeg",
+            "jpeg": "image/jpeg",
+            "png": "image/png",
+            "webp": "image/webp",
+            "avif": "image/avif",
+        }
+        content_type = content_type_map.get(ext, "image/jpeg")
+        print(f"Content type: {content_type}")
+
+        response = supabase.storage.from_(bucket).upload(
+            path=unique_name,
+            file=file_bytes,
+            file_options={"content-type": content_type}
+        )
+        print(f"Upload response: {response}")
+
+        # Get public URL
+        public_url = supabase.storage.from_(bucket).get_public_url(unique_name).rstrip("?")
+        print(f"Public URL: {public_url}")
+
+        return public_url
+
+    except Exception as e:
+        print("=== SUPABASE STORAGE ERROR ===")
+        traceback.print_exc()
+        raise
 
 
 def delete_image(url: str) -> bool:
-    """Delete image from Supabase Storage by its public URL."""
     try:
         supabase = get_supabase()
-        bucket = current_app.config["SUPABASE_BUCKET"]
-        
-        # Extract path from URL
-        # URL format: https://[ref].supabase.co/storage/v1/object/public/[bucket]/[path]
+        bucket = current_app.config.get("SUPABASE_BUCKET", "elato-media")
         base = f"/storage/v1/object/public/{bucket}/"
         if base in url:
             path = url.split(base)[-1]
@@ -47,4 +65,5 @@ def delete_image(url: str) -> bool:
             return True
         return False
     except Exception:
+        traceback.print_exc()
         return False
