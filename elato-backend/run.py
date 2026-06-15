@@ -3,7 +3,12 @@ from app.extensions import db
 
 app = create_app()
 
-if __name__ == "__main__":
-    with app.app_context():
+with app.app_context():
+    try:
         db.create_all()
-    app.run(debug=True, port=5000)
+        print("✅ Database connected and tables ready")
+    except Exception as e:
+        print(f"❌ Database error: {e}")
+
+if __name__ == "__main__":
+    app.run(debug=False, port=5000)
