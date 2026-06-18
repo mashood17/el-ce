@@ -4,12 +4,7 @@ import { useHeroSlides } from "../../hooks/useHeroSlides";
 
 const INTERVAL = 5000;
 
-const FALLBACK_SLIDES = [
-  "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=1400&q=80",
-  "https://images.unsplash.com/photo-1567206563114-c179706a56b4?w=1400&q=80",
-  "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=1400&q=80",
-  "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=1400&q=80",
-];
+const FALLBACK_SLIDES = [];
 
 const heroContainer = {
   hidden: {},
