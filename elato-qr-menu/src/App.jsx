@@ -12,7 +12,7 @@ const queryClient = new QueryClient({
 
 function SplashScreen({ onDone }) {
   useEffect(() => {
-    const timer = setTimeout(onDone, 2800);
+    const timer = setTimeout(onDone, 2200);
     return () => clearTimeout(timer);
   }, [onDone]);
 
@@ -140,22 +140,28 @@ function SplashScreen({ onDone }) {
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
 
+  const handleSplashDone = () => {
+    window.scrollTo(0, 0);
+    setShowSplash(false);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MenuPage />} />
+          <Route path="/:slug" element={<MenuPage />} />
+        </Routes>
+      </BrowserRouter>
+
       <AnimatePresence>
         {showSplash && (
-          <SplashScreen key="splash" onDone={() => setShowSplash(false)} />
+          <SplashScreen
+            key="splash"
+            onDone={handleSplashDone}
+          />
         )}
       </AnimatePresence>
-
-      {!showSplash && (
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<MenuPage />} />
-            <Route path="/:slug" element={<MenuPage />} />
-          </Routes>
-        </BrowserRouter>
-      )}
     </QueryClientProvider>
   );
 }
